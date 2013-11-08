@@ -1,0 +1,5 @@
+crm.flick('empty', 'toggle');
+crm.flip_form('create_product');
+
+jQuery('#create_product').html('#{ j render(:partial => 'new') }');
+crm.set_title('create_task', '#{j t(:create_product) }');

@@ -1,0 +1,10 @@
+= simple_form_for(@product, :html => one_submit_only, :remote => true) do |f|
+  = link_to_close new_product_path + "?view=#{@view}"
+  = hidden_field_tag :view, @view
+
+  = render 'product_fields', f: f
+
+  .buttonbar
+    = f.submit t :create_product
+    #{t :or}
+    = link_to_cancel new_product_path + "?view=#{@view}"

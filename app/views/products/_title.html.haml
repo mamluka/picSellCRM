@@ -1,1 +1,6 @@
-Hello man
+.title_tools
+  = link_to_inline(:create_product, url_for(:action => :new, :view => @view), :text => t(:create_product))
+.title#title
+  Products
+
+.remote#create_product{ hidden }

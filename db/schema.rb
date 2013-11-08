@@ -331,8 +331,10 @@ ActiveRecord::Schema.define(:version => 20131107231322) do
 
   create_table "products", :force => true do |t|
     t.integer "lead_id"
-    t.string  "product_name"
-    t.string  "product_price"
+    t.string  "name"
+    t.string  "model"
+    t.string  "brand"
+    t.decimal "price"
   end
 
   create_table "sessions", :force => true do |t|

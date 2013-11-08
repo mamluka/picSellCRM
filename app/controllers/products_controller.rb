@@ -4,16 +4,14 @@
 # See MIT-LICENSE file or http://www.opensource.org/licenses/mit-license.php
 #------------------------------------------------------------------------------
 class ProductsController < ApplicationController
-  before_filter :set_current_tab, :only => [ :index, :show ]
-  # GET /tasks
-  #----------------------------------------------------------------------------
+  before_filter :set_current_tab, :only => [:index, :show]
+
   def index
-    @products = {
-        amazon: [{name: 'droid'}, {name: 'iphone'}],
-        ebay: {}
+    @products =  {
+        pending: Product.all
     }
 
-    @view='amazon'
+    @view='pending'
 
     respond_with @products do |format|
       format.xls { render :layout => 'header' }
@@ -30,24 +28,10 @@ class ProductsController < ApplicationController
     respond_with(@task)
   end
 
-  # GET /tasks/new
-  #----------------------------------------------------------------------------
   def new
-    @view = params[:view] || "pending"
-    @task = Task.new
-    @bucket = Setting.unroll(:task_bucket)[1..-1] << [t(:due_specific_date, :default => 'On Specific Date...'), :specific_time]
-    @category = Setting.unroll(:task_category)
+    @product = Product.new
 
-    if params[:related]
-      model, id = params[:related].split(/_(\d+)/)
-      if related = model.classify.constantize.my.find_by_id(id)
-        instance_variable_set("@asset", related)
-      else
-        respond_to_related_not_found(model) and return
-      end
-    end
-
-    respond_with(@task)
+    respond_with(@product)
   end
 
   # GET /tasks/1/edit                                                      AJAX
@@ -69,11 +53,11 @@ class ProductsController < ApplicationController
   # POST /tasks
   #----------------------------------------------------------------------------
   def create
-    @view = params[:view] || "pending"
-    @task = Task.new(params[:task]) # NOTE: we don't display validation messages for tasks.
+    @view = params[:view]
+    @product = Product.new(params[:product]) # NOTE: we don't display validation messages for tasks.
 
-    respond_with(@task) do |format|
-      if @task.save
+    respond_with(@product) do |format|
+      if @product.save
         update_sidebar if called_from_index_page?
       end
     end

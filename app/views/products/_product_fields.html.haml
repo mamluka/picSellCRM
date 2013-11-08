@@ -1,0 +1,20 @@
+.section
+  %table
+    %tr
+      %td(colspan="5")
+        .label.top.req #{t :name}:
+        = f.text_field :name, :style => 'width:500px'
+    %tr
+      %td(colspan='3')
+        .label.top.req #{t :brand}
+        = f.text_field :brand
+      %td(colspan='2')
+        .label.top.req #{t :model}
+        = f.text_field :model
+    %tr
+      %td(colspan='2')
+        .label.top.req #{t :price}
+        = f.text_field :price
+
+
+    = hook(:task_top_section_bottom, self, :f => f)
