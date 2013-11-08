@@ -1,0 +1,20 @@
+= styles_for :product #see if we need special styles
+
+- if @view == "sold"
+  - buckets = Setting.unroll(:product_sold)
+  .title
+    = t(:products_sold)
+    = image_tag('loading.gif', :size => :thumb, :id => 'loading', :style => 'display: none;')
+- else
+  - buckets = Setting.unroll(:product_bucket)
+  = render 'title'
+
+.log#products
+  - buckets.each do |value, key|
+    %div{ :id => "list_#{key}" }
+      %h3{:class => key}= t(value)
+      .bucket{:id => key}= render :partial => @view, :collection => @products[key] || [], :locals => { :bucket => key }
+  - if @products.values.flatten.blank?
+    = render 'empty'
+
+#export= render 'shared/export'

@@ -20,7 +20,7 @@ en-US:
   tab_dashboard: Dashboard
   tab_tasks: Tasks
   tab_campaigns: Campaigns
-  tab_leads: Leads
+  tab_leads: Customers
   tab_accounts: Accounts
   tab_contacts: Contacts
   tab_opportunities: Opportunities
@@ -82,6 +82,8 @@ en-US:
   completed_last_week: Last week
   completed_this_month: This month
   completed_last_month: Last month
+  amazon: Amazon
+  ebay: Ebay
 
   # Models/Activity.
   #----------------------------------------------------------------------------
@@ -496,6 +498,7 @@ en-US:
   task_small: task
   tasks: Tasks
   tasks_small: tasks
+
   assign_to: Assign to
   assigned_tab: Assigned
   assigned_tasks: Assigned Tasks
@@ -576,6 +579,11 @@ en-US:
   my_accounts: My Accounts
   no_account_records: You have no accounts
   not_showing_hidden_entities: Not showing %{count} hidden %{entity}.
+
+  products: Products
+  create_product: Create Product
+  select_product: Select Product
+  tab_products: Products
 
   # Views -> Common.
   #----------------------------------------------------------------------------

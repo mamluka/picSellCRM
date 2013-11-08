@@ -207,25 +207,13 @@
   :url:
     :controller: tasks
 - :active: false
-  :text: :tab_campaigns
-  :url:
-    :controller: campaigns
-- :active: false
   :text: :tab_leads
   :url:
     :controller: leads
 - :active: false
-  :text: :tab_accounts
+  :text: :tab_products
   :url:
-    :controller: accounts
-- :active: false
-  :text: :tab_contacts
-  :url:
-    :controller: contacts
-- :active: false
-  :text: :tab_opportunities
-  :url:
-    :controller: opportunities
+    :controller: products
 - :active: false
   :text: :tab_team
   :url:
@@ -385,3 +373,9 @@ task_completed:
   - :completed_last_week
   - :completed_this_month
   - :completed_last_month
+
+product_bucket:
+  - :amazon
+  - :ebay
+
+

@@ -37,26 +37,27 @@
 #
 
 class Lead < ActiveRecord::Base
-  belongs_to  :user
-  belongs_to  :campaign
-  belongs_to  :assignee, :class_name => "User", :foreign_key => :assigned_to
-  has_one     :contact, :dependent => :nullify # On destroy keep the contact, but nullify its lead_id
-  has_many    :tasks, :as => :asset, :dependent => :destroy#, :order => 'created_at DESC'
-  has_one     :business_address, :dependent => :destroy, :as => :addressable, :class_name => "Address", :conditions => "address_type='Business'"
-  has_many    :addresses, :dependent => :destroy, :as => :addressable, :class_name => "Address" # advanced search uses this
-  has_many    :emails, :as => :mediator
+  belongs_to :user
+  belongs_to :campaign
+  belongs_to :assignee, :class_name => "User", :foreign_key => :assigned_to
+  has_one :contact, :dependent => :nullify # On destroy keep the contact, but nullify its lead_id
+  has_many :tasks, :as => :asset, :dependent => :destroy #, :order => 'created_at DESC'
+  has_one :business_address, :dependent => :destroy, :as => :addressable, :class_name => "Address", :conditions => "address_type='Business'"
+  has_many :addresses, :dependent => :destroy, :as => :addressable, :class_name => "Address" # advanced search uses this
+  has_many :emails, :as => :mediator
+  has_many :products
 
   serialize :subscribed_users, Set
 
   accepts_nested_attributes_for :business_address, :allow_destroy => true
 
   scope :state, lambda { |filters|
-    where([ 'status IN (?)' + (filters.delete('other') ? ' OR status IS NULL' : ''), filters ])
+    where(['status IN (?)' + (filters.delete('other') ? ' OR status IS NULL' : ''), filters])
   }
   scope :converted, where(:status => 'converted')
   scope :for_campaign, lambda { |id| where('campaign_id = ?', id) }
-  scope :created_by, lambda { |user| where('user_id = ?' , user.id) }
-  scope :assigned_to, lambda { |user| where('assigned_to = ?' , user.id) }
+  scope :created_by, lambda { |user| where('user_id = ?', user.id) }
+  scope :assigned_to, lambda { |user| where('assigned_to = ?', user.id) }
 
   scope :text_search, lambda { |query| search('first_name_or_last_name_or_company_or_email_cont' => query).result }
 
@@ -64,10 +65,10 @@ class Lead < ActiveRecord::Base
   acts_as_commentable
   uses_comment_extensions
   acts_as_taggable_on :tags
-  has_paper_trail :ignore => [ :subscribed_users ]
+  has_paper_trail :ignore => [:subscribed_users]
   has_fields
   exportable
-  sortable :by => [ "first_name ASC", "last_name ASC", "company ASC", "rating DESC", "created_at DESC", "updated_at DESC" ], :default => "created_at DESC"
+  sortable :by => ["first_name ASC", "last_name ASC", "company ASC", "rating DESC", "created_at DESC", "updated_at DESC"], :default => "created_at DESC"
 
   has_ransackable_associations %w(contact campaign tasks tags activities emails addresses comments)
   ransack_can_autocomplete
@@ -76,13 +77,18 @@ class Lead < ActiveRecord::Base
   validates_presence_of :last_name, :message => :missing_last_name if Setting.require_last_names
   validate :users_for_shared_access
 
-  after_create  :increment_leads_count
+  after_create :increment_leads_count
   after_destroy :decrement_leads_count
 
   # Default values provided through class methods.
   #----------------------------------------------------------------------------
-  def self.per_page ; 20 ; end
-  def self.first_name_position ; "before" ; end
+  def self.per_page;
+    20;
+  end
+
+  def self.first_name_position;
+    "before";
+  end
 
   # Save the lead along with its permissions.
   #----------------------------------------------------------------------------
@@ -109,11 +115,11 @@ class Lead < ActiveRecord::Base
     if self.campaign_id == attributes[:campaign_id] # Same campaign (if any).
       self.attributes = attributes
       self.save
-    else                                            # Campaign has been changed -- update lead counters...
-      decrement_leads_count                         # ..for the old campaign...
-      self.attributes = attributes                  # Assign new campaign.
+    else # Campaign has been changed -- update lead counters...
+      decrement_leads_count # ..for the old campaign...
+      self.attributes = attributes # Assign new campaign.
       lead = self.save
-      increment_leads_count                         # ...and now for the new campaign.
+      increment_leads_count # ...and now for the new campaign.
       lead
     end
   end
@@ -122,9 +128,9 @@ class Lead < ActiveRecord::Base
   # successful promotion Lead status gets set to :converted.
   #----------------------------------------------------------------------------
   def promote(params)
-    account     = Account.create_or_select_for(self, params[:account])
+    account = Account.create_or_select_for(self, params[:account])
     opportunity = Opportunity.create_for(self, account, params[:opportunity])
-    contact     = Contact.create_for(self, account, opportunity, params)
+    contact = Contact.create_for(self, account, opportunity, params)
 
     [account, opportunity, contact]
   end
@@ -161,9 +167,10 @@ class Lead < ActiveRecord::Base
       "#{self.last_name}, #{self.first_name}"
     end
   end
+
   alias :name :full_name
 
-private
+  private
 
   #----------------------------------------------------------------------------
   def increment_leads_count

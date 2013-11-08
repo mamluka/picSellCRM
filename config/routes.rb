@@ -137,6 +137,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :products, :id => /\d+/
+
   resources :users, :id => /\d+/ do
     member do
       get :avatar
